@@ -1,0 +1,55 @@
+version: '3.4'
+
+services:
+
+  identity.api:
+    image: ${DOCKER_REGISTRY-}identityapi
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=${DB_HOST};Database=Sport4Life_Identity;user id=${DB_USER};password=${DB_PASSWORD};${DB_EXTRA}
+      - IdentityOptions__Jwt__PrivateKey=${JWT_KEY}
+      - IdentityOptions__Jwt__PublicKey=${JWT_KEY}
+      - RabbitMqSettings__UserName=${RABBITMQ_USER}
+      - RabbitMqSettings__Password=${RABBITMQ_PASSWORD}
+    build:
+      context: .
+      dockerfile: Identity.Api/Dockerfile
+
+
+  order.api:
+    image: ${DOCKER_REGISTRY-}orderapi
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=${DB_HOST};Database=Sport4Life_Catalog;user id=${DB_USER};password=${DB_PASSWORD};${DB_EXTRA}
+      - IdentityOptions__Jwt__PrivateKey=${JWT_KEY}
+      - IdentityOptions__Jwt__PublicKey=${JWT_KEY}
+      - RabbitMqSettings__UserName=${RABBITMQ_USER}
+      - RabbitMqSettings__Password=${RABBITMQ_PASSWORD}
+    build:
+      context: .
+      dockerfile: Order.Api/Dockerfile
+
+
+  raport.api:
+    image: ${DOCKER_REGISTRY-}raportapi
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=${DB_HOST};Database=Backoffice;user id=${DB_USER};password=${DB_PASSWORD};${DB_EXTRA}
+      - IdentityOptions__Jwt__PrivateKey=${JWT_KEY}
+      - IdentityOptions__Jwt__PublicKey=${JWT_KEY}
+      - RabbitMqSettings__UserName=${RABBITMQ_USER}
+      - RabbitMqSettings__Password=${RABBITMQ_PASSWORD}
+    build:
+      context: .
+      dockerfile: Raport.Api/Dockerfile
+
+
+  refund.api:
+    image: ${DOCKER_REGISTRY-}refundapi
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=${DB_HOST};Database=Sport4Life_Catalog;user id=${DB_USER};password=${DB_PASSWORD};${DB_EXTRA}
+      - IdentityOptions__Jwt__PrivateKey=${JWT_KEY}
+      - IdentityOptions__Jwt__PublicKey=${JWT_KEY}
+      - RabbitMqSettings__UserName=${RABBITMQ_USER}
+      - RabbitMqSettings__Password=${RABBITMQ_PASSWORD}
+    build:
+      context: .
+      dockerfile: Refund.Api/Dockerfile
+

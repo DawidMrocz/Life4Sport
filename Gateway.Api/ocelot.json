@@ -1,0 +1,123 @@
+{
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/Producer",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "catalog.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/Producer",
+      "UpstreamHttpMethod": [ "POST", "GET" ]
+    },
+    {
+      "DownstreamPathTemplate": "/Producer/{producerId}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "catalog.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/Producer/{producerId}",
+      "UpstreamHttpMethod": [ "DELETE", "PUT" ]
+    },
+    {
+      "DownstreamPathTemplate": "/Customer",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "catalog.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/Customer",
+      "UpstreamHttpMethod": [ "POST", "GET" ]
+    },
+    {
+      "DownstreamPathTemplate": "/Customer/{categoryId}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "catalog.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/Customer/{categoryId}",
+      "UpstreamHttpMethod": [ "DELETE", "PUT" ]
+    },
+    {
+      "DownstreamPathTemplate": "/Product",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "catalog.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/Product",
+      "UpstreamHttpMethod": [ "POST", "GET" ]
+    },
+    {
+      "DownstreamPathTemplate": "/Product/{productId}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "catalog.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/Product/{productId}",
+      "UpstreamHttpMethod": [ "DELETE", "PUT", "GET" ]
+    },
+    {
+      "DownstreamPathTemplate": "/Product/{productId}/AddToBasket",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "catalog.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/Product/{productId}/AddToBasket",
+      "UpstreamHttpMethod": [ "POST" ]
+    }
+    //{
+    //  "DownstreamPathTemplate": "/Product",
+    //  "DownstreamScheme": "http",
+    //  "DownstreamHostAndPorts": [
+    //    {
+    //      "Host": "catalog.api",
+    //      "Port": 80
+    //    }
+    //  ],
+    //  "UpstreamPathTemplate": "/Product",
+    //  "UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ]
+    //}
+    //{
+    //  "DownstreamPathTemplate": "/User",
+    //  "DownstreamScheme": "http",
+    //  "DownstreamHostAndPorts": [
+    //    {
+    //      "Host": "identity.api",
+    //      "Port": 80
+    //    }
+    //  ],
+    //  "UpstreamPathTemplate": "/User",
+    //  "UpstreamHttpMethod": [ "POST", "PUT", "GET","DELETE"],
+    //  //"AuthenticationOptions": {
+    //  //  "AuthenticationProviderKey": "IdentityApiKey",
+    //  //  "AllowedScopes": []
+    //  //}
+    //}
+
+  ],
+  "GlobalConfiguration": {
+    "RequestIdKey": "OcRequestId",
+    "AdministrationPath": "/administration",
+    "BaseUrl": "http://localhost:800"
+
+  }
+}

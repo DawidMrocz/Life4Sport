@@ -1,0 +1,137 @@
+version: '3.4'
+
+name: life-for-sport
+
+services: 
+  catalog.api:
+    image: ${DOCKER_REGISTRY-}catalogapi
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=${DB_HOST};Database=Sport4Life_Catalog;user id=${DB_USER};password=${DB_PASSWORD};${DB_EXTRA}
+      - IdentityOptions__Jwt__PrivateKey=${JWT_KEY}
+      - IdentityOptions__Jwt__PublicKey=${JWT_KEY}
+      - RabbitMqSettings__UserName=${RABBITMQ_USER}
+      - RabbitMqSettings__Password=${RABBITMQ_PASSWORD}
+    ports:
+      - '8020:80'
+    build:
+      context: .
+      dockerfile: Catalog.Api/Dockerfile
+    volumes:
+      - ./Files:/var/files
+
+  identity.api:
+    image: ${DOCKER_REGISTRY-}identityapi
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=${DB_HOST};Database=Sport4Life_Identity;user id=${DB_USER};password=${DB_PASSWORD};${DB_EXTRA}
+      - IdentityOptions__Jwt__PrivateKey=${JWT_KEY}
+      - IdentityOptions__Jwt__PublicKey=${JWT_KEY}
+      - RabbitMqSettings__UserName=${RABBITMQ_USER}
+      - RabbitMqSettings__Password=${RABBITMQ_PASSWORD}
+    ports:
+      - '8010:80'
+    build:
+      context: .
+      dockerfile: Identity.Api/Dockerfile
+
+  basket.api:
+    image: ${DOCKER_REGISTRY-}basketapi
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=${DB_HOST};Database=Sport4Life_Basket;user id=${DB_USER};password=${DB_PASSWORD};${DB_EXTRA}
+      - IdentityOptions__Jwt__PrivateKey=${JWT_KEY}
+      - IdentityOptions__Jwt__PublicKey=${JWT_KEY}
+      - RabbitMqSettings__UserName=${RABBITMQ_USER}
+      - RabbitMqSettings__Password=${RABBITMQ_PASSWORD}
+    build:
+      context: .
+      dockerfile: Basket.Api/Dockerfile
+    ports:
+      - '8030:80'
+    depends_on:
+      - rabbitmq
+
+  gateway.api:
+    image: ${DOCKER_REGISTRY-}gatewayapi
+    ports:
+      - '8000:80'
+    build:
+      context: .
+      dockerfile: Gateway.Api/Dockerfile
+
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq
+    ports:
+        - 5672:5672
+        - 15672:15672
+    volumes:
+        - rabbitmqdata:/var/log/rabbitmq
+    hostname: "rabbitmq"
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}
+
+  zookeeper:
+    image: wurstmeister/zookeeper
+    ports:
+      - '2181:2181'
+    volumes:
+      - zookeeper-conf:/opt/zookeeper-3.4.13/conf
+      - zookeeper-data:/opt/zookeeper-3.4.13/data
+
+  kafka:
+    image: wurstmeister/kafka
+    ports:
+      - '9092:9092'
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_CREATE_TOPICS: 'create-order'
+      KAFKA_ADVERTISED_HOST_NAME: kafka
+    volumes:
+      - ./Kafka/docker.sock:/var/run/docker.sock
+      - kafka-data:/kafka
+    depends_on:
+      - zookeeper
+    # healthcheck:
+    #   test: nc -z localhost 9092 || exit -1
+    #   start_period: 15s
+    #   interval: 5s
+    #   timeout: 10s
+    #   retries: 10  
+
+  order.api:
+    image: ${DOCKER_REGISTRY-}orderapi
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=${DB_HOST};Database=Sport4Life_Order;user id=${DB_USER};password=${DB_PASSWORD};${DB_EXTRA}
+      - IdentityOptions__Jwt__PrivateKey=${JWT_KEY}
+      - IdentityOptions__Jwt__PublicKey=${JWT_KEY}
+      - RabbitMqSettings__UserName=${RABBITMQ_USER}
+      - RabbitMqSettings__Password=${RABBITMQ_PASSWORD}
+    build:
+      context: .
+      dockerfile: Order.Api/Dockerfile
+    ports:
+      - '8040:80'
+
+  discount.api:
+    image: ${DOCKER_REGISTRY-}discountapi
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=${DB_HOST};Database=Sport4Life_Discount;user id=${DB_USER};password=${DB_PASSWORD};${DB_EXTRA}
+      - IdentityOptions__Jwt__PrivateKey=${JWT_KEY}
+      - IdentityOptions__Jwt__PublicKey=${JWT_KEY}
+      - RabbitMqSettings__UserName=${RABBITMQ_USER}
+      - RabbitMqSettings__Password=${RABBITMQ_PASSWORD}
+    build:
+      context: .
+      dockerfile: Discount.Api/Dockerfile
+    ports:
+      - '8050:80'
+
+volumes:
+  rabbitmqdata:
+  kafka-data:
+  zookeeper-conf:
+  zookeeper-data:
+
+
+
+
